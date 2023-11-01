@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="utf-8"/>
+    <title>Список паролей</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments :: nav_bar}"></div>
+    <h1>Список паролей</h1>
+    <div th:if="${param.added_success}" class=" alert alert-info">
+        Данные пароля успешно добавлены.
+    </div>
+    <hr>
+    <h2 th:text="${passAuth.id} ? 'Обновление паролей' : 'Добавление пароля'"/>
+    <hr/>
+    <form action="#" th:action="@{/pass/addPass}" th:object="${passAuth}" method="POST">
+        <input type="hidden" th:field="*{id}">
+        <div class="mb-3 row">
+            <div class="col-sm-6">
+                <input type="text"  id="name" autofocus="autofocus"
+                       class="form-control" required name="name"  placeholder="Имя" th:field="*{name}" >
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-sm-6">
+                <input type="text"  id="url" autofocus="autofocus"
+                       class="form-control" required name="url"  placeholder="Url" th:field="*{url}" >
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-sm-6">
+                <input type="text"  id="username" autofocus="autofocus"
+                       class="form-control" required name="username"  placeholder="Логин" th:field="*{username}" >
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-6">
+                <input type="text"  id="password" autofocus="autofocus"
+                       class="form-control" required name="password"  placeholder="Пароль" th:field="*{password}" >
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success" th:unless="${passAuth.id}">Добавить</button>
+        <button type="submit" class="btn btn-success" th:if="${passAuth.id}">Обновить</button>
+    </form>
+
+    <hr>
+<!--<div th:unless="${passAuth.id}">-->
+    <form method="POST" th:action="@{/pass/upload-csv-file}" enctype="multipart/form-data" th:unless="${passAuth.id}">
+        <div class="form-group btn-info">
+            <label for="file" >Выберете CSV файл</label>
+            <input type="file" name="file" class="btn btn-success" id="file" accept=".csv">
+            <hr/>
+        </div>
+        <button type="submit" class="btn btn-success">Импорт паролей</button>
+    </form >
+    </div>
+    <hr/>
+    <a th:href="@{/}">Назад к списку паролей</a>
+    <br>
+    <div sec:authorize="isAuthenticated()">
+        Авторизован <span sec:authentication="name"></span></div>
+<!--</div>-->
+</body>
+</html>

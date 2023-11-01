@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Список паролей</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container">
+    <div th:replace="~{fragments :: nav_bar}"></div>
+    <h2>Список паролей авторизации</h2>
+    <div th:if="${param.delete_success}" class=" alert alert-info">
+        Данные пароля успешно удалены.
+    </div>
+    <div th:if="${param.update_success}" class=" alert alert-info">
+        Данные пароля успешно обновлены.
+    </div>
+    <div th:if="${param.import_success}" class=" alert alert-info">
+        Данные паролей успешно импортированы.
+    </div>
+   <a th:href="@{/pass/add}" class="btn btn-primary btn-sm mb-3">Добавить пароль</a>
+    <hr/>
+    <div th:switch="${passAuthList}">
+        <h3 th:case="null">Нет паролей для отображения</h3>
+        <div th:case="*">
+            <h3>Все пароли</h3>
+            <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+        <th hidden>
+            <a th:href="@{'/pass/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}" >
+                id</a>
+        </th>
+            <th>
+                <a th:href="@{'/pass/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">
+                    Имя</a>
+            </th>
+        <th>
+            <a th:href="@{'/pass/page/' + ${currentPage} + '?sortField=url&sortDir=' + ${reverseSortDir}}">
+                Url Сайта</a>
+        </th>
+        <th>
+            <a th:href="@{'/pass/page/' + ${currentPage} + '?sortField=username&sortDir=' + ${reverseSortDir}}">
+                Логин</a>
+        </th>
+        <th>
+            <a th:href="@{'/pass/page/' + ${currentPage} + '?sortField=password&sortDir=' + ${reverseSortDir}}">
+                Пароль</a>
+        </th>
+        <th> Операции </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="passAuth: ${passAuthList}">
+            <td th:text="${passAuth.id}" hidden/>
+            <td th:text="${passAuth.name}"/>
+            <td th:text="${#strings.abbreviate(passAuth.url,50)}"/>
+            <td th:text="${passAuth.username}" />
+            <td th:text="${passAuth.password}" />
+            <td><a th:href="@{/pass/upd/{id}(id=${passAuth.id})}" class="btn btn-primary btn-sm mb-3">Обновить</a>
+                <a th:href="@{/pass/del/{id}(id=${passAuth.id})}" class="btn btn-danger btn-sm mb-3">Удалить</a></td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div th:if = "${totalPages > 1}">
+        <div class = "row col-sm-10">
+            <div class = "col-sm-2">
+                Кол-во данных: [[${totalItems}]]
+            </div>
+            <div class = "col-sm-1">
+                        <div th:if = "${currentPage < 3}">
+                            <div th:with="currentMin=(${currentPage} - 2)">
+
+                            <span th:each="i: ${#numbers.sequence(1, 3)}">
+                            <a th:if="${currentPage != i}" th:href="@{'/pass/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                            <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+                            </span>
+                            </div>
+                            <div class = "col-sm-1">
+                                <a th:if="${(currentPage < totalPages) and (currentPage > 1)}" th:href="@{'/pass/page/' + ${currentPage - 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Назад</a>
+                                <span th:unless="${(currentPage < totalPages) and (currentPage > 1)}">Назад</span>
+                                <a th:if="${currentPage < totalPages}" th:href="@{'/pass/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Далее</a>
+                                <span th:unless="${currentPage < totalPages}">Далее</span>
+                                <a th:if="${currentPage < totalPages}" th:href="@{'/pass/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Конец</a>
+                                <span th:unless="${currentPage < totalPages}">Конец</span>
+                            </div>
+
+                            <div class="col-sm-1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                </div>
+
+                <div class = "col-sm-1">
+
+                <div th:if = "${totalPages > currentPage}">
+                <div th:with="pageLimit=(${currentPage}+1)">
+                    <div th:if = "${currentPage > 2}">
+                    <div th:with="currentMin=(${currentPage} - 1)">
+
+     <span th:each="i: ${#numbers.sequence(currentMin, pageLimit)}">
+      <a th:if="${currentPage != i}" th:href="@{'/pass/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+     </span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${(currentPage < totalPages) and (currentPage > 1)}" th:href="@{'/pass/page/' + ${currentPage - 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Назад</a>
+                <span th:unless="${(currentPage < totalPages) and (currentPage > 1)}">Назад</span>
+                <a th:if="${currentPage < totalPages}" th:href="@{'/pass/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Далее</a>
+                <span th:unless="${currentPage < totalPages}">Далее</span>
+                <a th:if="${currentPage < totalPages}" th:href="@{'/pass/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Конец</a>
+                <span th:unless="${currentPage < totalPages}">Назад</span>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <br>
+
+</div>
+</body>
+</html>

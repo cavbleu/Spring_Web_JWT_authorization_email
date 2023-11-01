@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <title>Error</title>
+</head>
+<body>
+
+<div class="container">
+  <!-- show errors if any . -->
+
+  <div class="row mt-2">
+    <div th:if="${param.invalid}" class="col-sm-8">
+      <p class="alert alert-danger">Неверный токен подтверждения</p>
+    </div>
+
+    <div th:if="${param.expired}" class="col-sm-8">
+      <p class="alert alert-info">Срок действия этой ссылки для подтверждения уже истек.</p>
+    </div>
+  </div>
+  <a href="#" th:href="@{/}">Перейти на домашнюю страницу</a>
+</div>
+
+</body>
+</html>
